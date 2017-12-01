@@ -1,0 +1,10 @@
+function uaa_saveFigureTag(h,e)
+
+fPath = get(h,'Tag');
+disp(get(h,'Tag'));
+fileID = fOpen('imageIndex.txt');
+fprintf(fileID,fPath);
+fclose(fileID);
+ax = get(h,'parent');
+hold(ax,'on');
+text(

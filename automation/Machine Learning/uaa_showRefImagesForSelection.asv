@@ -1,0 +1,27 @@
+function uaa_showRefImagesForSelection(file_list)
+%show a number of reference images and save their info to a text file when
+%they are clicked
+
+global uaa
+
+maxImages = 50; %show 50 images at a time
+
+maxImages = min(maxImages, length(file_list2));
+% I = cell(maxImages,1);
+% for i = 1:maxImages
+%     I{i} = imread(file_list2{i});
+% end
+
+f=figure;
+hIm = imdisp(file_list2(1:maxImages));
+hIm = hIm';
+hIm = hIm(:);
+for i = 1:maxImages
+    set(hIm(i),'Tag',file_list2{i},'ButtonDownFcn',@uaa_saveFigureTag);
+%     ax = get(hIm(i),'Parent');
+%     hold(ax,'on');
+%     x = mean(get(ax,'Xlim'));
+%     y = mean(get(ax,'Ylim'));
+%     text(x,y,num2str(i),'Color','r','Parent',ax);
+%     hold(ax,'off');
+end

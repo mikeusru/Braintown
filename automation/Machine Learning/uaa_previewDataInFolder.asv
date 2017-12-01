@@ -1,0 +1,43 @@
+function uaa_previewDataInFolder(file_list2)
+%tool to find and display reference images in a particular folder. good for
+%indexing folders to use for training data.
+
+global uaa
+
+
+expression = 'refimage[^z]'; %reference images, not zoomed out
+maxImages = 50; %show 50 images at a time
+
+if nargin<1
+    [fileName,pathName]= uiputfile('*.mat','Save ');
+    uaa.filePaths.allRefImages = file_list2;
+    folder_name = uigetdir;
+    file_list = getAllFiles(folder_name,1);
+    refInd = regexpi(file_list,expression);
+    refInd = ~cellfun(@isempty,refInd);
+    file_list2 = file_list(refInd);
+end
+
+[fileName,pathName]= uiputfile('*.txt','Select/Create Index File');
+uaa.filePaths.imageIndexText = fullfile(pathName,fileName);
+
+maxImages = min(maxImages, length(file_list2));
+% I = cell(maxImages,1);
+% for i = 1:maxImages
+%     I{i} = imread(file_list2{i});
+% end
+
+f=figure;
+hIm = imdisp(file_list2(1:maxImages));
+hIm = hIm';
+hIm = hIm(:);
+for i = 1:maxImages
+    set(hIm(i),'Tag',file_list2{i},'ButtonDownFcn',@uaa_saveFigureTag);
+%     ax = get(hIm(i),'Parent');
+%     hold(ax,'on');
+%     x = mean(get(ax,'Xlim'));
+%     y = mean(get(ax,'Ylim'));
+%     text(x,y,num2str(i),'Color','r','Parent',ax);
+%     hold(ax,'off');
+end
+    

@@ -1,0 +1,9 @@
+function uaaPlugins = uaa_loadPluginList
+p = mfilename('fullpath');
+[folder,~,~] = fileparts(p);
+folder = [folder,'\plugins'];
+s = what(folder);
+uaaPlugins = s.m;
+uaaPlugins = strrep(uaaPlugins,'.m','');
+pluginInfo = cellfun(@help,uaaPlugins,'UniformOutput',false);
+uaaPlugins = [uaaPlugins,pluginInfo];
