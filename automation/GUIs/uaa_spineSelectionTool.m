@@ -22,7 +22,7 @@ function varargout = uaa_spineSelectionTool(varargin)
 
 % Edit the above text to modify the response to help uaa_spineSelectionTool
 
-% Last Modified by GUIDE v2.5 17-Oct-2017 10:45:30
+% Last Modified by GUIDE v2.5 04-Dec-2017 10:03:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -530,4 +530,3 @@ figure; imshow(Io); axis image off
 colormap gray
 hold on
 sc = scatter(pos(:,1),pos(:,2),100,'y','filled','MarkerFaceAlpha',.3,'MarkerEdgeColor','g');
-

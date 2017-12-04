@@ -1,6 +1,13 @@
 function [thin,spineSearchZone] = uaa_findDendriteUsingEndpoints(BW)
 % [thin,spineSearchZone] = uaa_findDendriteUsingEndpoints(BW)
-%dendrite extraction adapted from Cheng et al, 2007
+% Dendrite extraction adapted from Cheng et al, 2007
+% Inputs: 
+% (BW) - Binary mask of dendrite
+%
+% Outputs: 
+% (thin) - Binary mask of dendrite spine backbone
+% (spineSearchZone) - Binary mask of region which may possibly
+%   include dendritic spines
 global uaa
 %M is max spine length
 % spines are max 3µm long and dendrites are max 2µm wide
