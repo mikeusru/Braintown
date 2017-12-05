@@ -12,6 +12,9 @@ switch ftype
         end
         %load Images
         [imageStruct, pName] = loadImageFiles(pName);
+        if ~imageStruct
+            return
+        end
         %set Startpath
         uaa.settings.start_path_image = pName;
     case 'folder'
@@ -106,6 +109,11 @@ end
 %select images to load and load them
 function [imageStruct, pName] = loadImageFiles(pName)
 [fileName,pName,~]=uigetfile([pName,'*.tif'],'Select File','MultiSelect','on');
+if ~fileName
+    imageStruct = 0;
+    pName = 0;
+    return
+end
 %new file loading system
 if ~iscell(fileName)
     fileName = {fileName};
