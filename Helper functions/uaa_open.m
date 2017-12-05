@@ -12,7 +12,7 @@ switch ftype
         end
         %load Images
         [imageStruct, pName] = loadImageFiles(pName);
-        if ~imageStruct
+        if isinteger(imageStruct)
             return
         end
         %set Startpath
