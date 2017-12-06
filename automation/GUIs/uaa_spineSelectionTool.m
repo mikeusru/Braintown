@@ -524,7 +524,7 @@ if ~isempty(pos)
     end
 end
 
-spines_removed = bwperim(uaa.fxnChoosing.tbl{'BWBlobs (3)',1}{1});
+spines_removed = bwperim(uaa.fxnChoosing.tbl{'BWBlobs (4)',1}{1});
 Io = imoverlay(I,spines_removed,'r');
 figure; imshow(Io); axis image off
 colormap gray
