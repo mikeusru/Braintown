@@ -32,6 +32,20 @@ switch ftype
         fileList = getAllFiles(pName);
         % % % % % % add way to specify channels
         [imageStruct] = loadOnlyTifs(fileList);
+    case 'bens_fov'
+        %find starting folder
+        if isfield(uaa.settings,'start_path_image') && ischar(uaa.settings.start_path_image)
+            pName = uaa.settings.start_path_image;
+        else
+            pName = '../';
+        end
+        %load Images
+        [imageStruct, pName] = loadBensFOV(pName);
+        if isinteger(imageStruct)
+            return
+        end
+        %set Startpath
+        uaa.settings.start_path_image = pName;        
 end
 %convert to table
 T = struct2table(imageStruct,'asarray',true);
@@ -118,7 +132,6 @@ end
 if ~iscell(fileName)
     fileName = {fileName};
 end
-fileNameOnly = fileName;
 
 for i=1:length(fileName)
     fileName{i} = fullfile(pName,fileName{i});
@@ -129,6 +142,26 @@ fileName = fileName';
 imageStructPart = makeImageStructPart(I,numImages,imageInfo);
 imageStruct = imageStructPart;
 
+function [imageStruct, pName] = loadBensFOV(pName)
+[fileName,pName,~]=uigetfile([pName,'*.mat'],'Select File','MultiSelect','off');
+if ~fileName
+    imageStruct = 0;
+    pName = 0;
+    return
+end
+filePath = fullfile(pName,fileName);
+fov = load(filePath);
+fov = fov.fov;
+imageStruct = struct([]);
+for i = 1:length(fov)
+    if ~isempty(fov(i).img)
+        imageStruct(end+1).Image = fov(i).img;
+        imageStruct(end).DateTime = fov(i).date;
+        imageStruct(end).Filename = fileName;
+        imageStruct(end).Foldername = pName;
+    end
+end
+    
 %put images together into struct
 function imageStructPart = makeImageStructPart(I,numImages,imageInfo)
 ii = 1;

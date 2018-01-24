@@ -791,4 +791,4 @@ function open_bens_fov_file_Callback(hObject, eventdata, handles)
 % hObject    handle to open_bens_fov_file (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-uaa_open('images');
+uaa_open('bens_fov');
