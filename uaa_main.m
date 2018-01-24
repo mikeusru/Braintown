@@ -22,7 +22,7 @@ function varargout = uaa_main(varargin)
 
 % Edit the above text to modify the response to help uaa_main
 
-% Last Modified by GUIDE v2.5 06-Oct-2017 15:29:17
+% Last Modified by GUIDE v2.5 24-Jan-2018 15:42:22
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -784,3 +784,11 @@ function Untitled_3_Callback(hObject, eventdata, handles)
 % hObject    handle to Untitled_3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function open_bens_fov_file_Callback(hObject, eventdata, handles)
+% hObject    handle to open_bens_fov_file (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+uaa_open('images');
