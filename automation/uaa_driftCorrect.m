@@ -6,7 +6,6 @@ disp('Using currently selected frame as reference for Drift Correction algorithm
 
 Iref=uaa_getCurrentImageFrame;
 nFrames=height(uaa.T);
-
 for i=1:nFrames
     I=uaa_getCurrentImageFrame(i);
     [ shiftx(i),shifty(i) ] = computeDrift( Iref,I);
@@ -34,6 +33,9 @@ for i=1:nFrames
     %shift entire stack as well as projection
     stackFrame_shift=blankNewIStack;
     for j=1:stackSize
+        if isempty(uaa.T.ImageStack{i,1})
+            continue
+        end
         Is=uaa.T.ImageStack{i,1}(:,:,j);
         stackFrame_shift(row,col,j)=Is;
     end

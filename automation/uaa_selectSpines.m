@@ -7,7 +7,7 @@ hold(ax, 'on');
 markerSiz = 1e5 / max(max(size(uaa.T.Image{uaa.currentFrame,1})) * 4,1000);
 scatter(ax,e.IntersectionPoint(1), e.IntersectionPoint(2),markerSiz,...
     'd','filled','MarkerEdgeColor','r','MarkerFaceColor','k',...
-    'ButtonDownFcn',@uaa_deselectSpines);
+    'ButtonDownFcn',@uaa_selectedSpineClickCallback);
 hold(ax, 'off');
 
 %save spine info

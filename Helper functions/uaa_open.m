@@ -153,12 +153,23 @@ filePath = fullfile(pName,fileName);
 fov = load(filePath);
 fov = fov.fov;
 imageStruct = struct([]);
+xPos = [fov.xPos];
+yPos = [fov.yPos];
+loadedSessions = [];
 for i = 1:length(fov)
     if ~isempty(fov(i).img)
+        session = fov(i).session;
+        if sum(session == loadedSessions) > 0
+            continue
+        end
+        loadedSessions(end+1) = session;
         imageStruct(end+1).Image = fov(i).img;
         imageStruct(end).DateTime = fov(i).date;
         imageStruct(end).Filename = fileName;
         imageStruct(end).Foldername = pName;
+        x = xPos([fov.session] == session);
+        y = yPos([fov.session] == session);
+        imageStruct(end).SpineCoordinates = [x',y'];
     end
 end
     

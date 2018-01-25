@@ -64,8 +64,9 @@ if isfield(uaa.handles,'uaa_spineSelectionTool') && ishandle(uaa.handles.uaa_spi
         
     end
     
-    if get(uaa.handles.uaa_spineSelectionTool.selectSpinesTB, 'Value')
-        buttonFxn = @uaa_selectSpines;
+    if get(uaa.handles.uaa_spineSelectionTool.selectSpinesTB, 'Value') ...
+            || get(uaa.handles.uaa_spineSelectionTool.trackSpinesTB, 'Value')
+        buttonFxn = @uaa_clickOnImage;
         uaa_initializeSpineCoordinates;
         %         map = gray;
         %plot spine coordinates
@@ -86,7 +87,11 @@ if isfield(uaa.handles,'uaa_spineSelectionTool') && ishandle(uaa.handles.uaa_spi
             scatter(uaa.handles.ax(1),spineCoordinates(i,1),...
                 spineCoordinates(i,2),...
                 markerSiz/2,'d','filled','MarkerEdgeColor','r','MarkerFaceColor','k',...
-                'LineWidth',2,'ButtonDownFcn',@uaa_deselectSpines);
+                'LineWidth',2,'ButtonDownFcn',@uaa_selectedSpineClickCallback);
+        end
+        if get(uaa.handles.uaa_spineSelectionTool.trackSpinesTB, 'Value')
+            uaa_tagSpineScatters();
+            uaa_markTaggedSpine();
         end
         hold(uaa.handles.ax(1), 'off');
     end

@@ -22,7 +22,7 @@ function varargout = uaa_spineSelectionTool(varargin)
 
 % Edit the above text to modify the response to help uaa_spineSelectionTool
 
-% Last Modified by GUIDE v2.5 04-Dec-2017 10:03:15
+% Last Modified by GUIDE v2.5 25-Jan-2018 15:49:18
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -88,7 +88,9 @@ function selectSpinesTB_Callback(hObject, eventdata, handles)
 % else
 %     set(uaa.handles.ax.Children, 'ButtonDownFcn', '');
 % end
-global uaa
+if get(hObject,'Value')
+    set(handles.trackSpinesTB,'Value',0);
+end
 uaa_initializeSpineCoordinates;
 uaa_updateImage;
 % Hint: get(hObject,'Value') returns toggle state of selectSpinesTB
@@ -530,3 +532,17 @@ figure; imshow(Io); axis image off
 colormap gray
 hold on
 sc = scatter(pos(:,1),pos(:,2),100,'y','filled','MarkerFaceAlpha',.3,'MarkerEdgeColor','g');
+
+
+% --- Executes on button press in trackSpinesTB.
+function trackSpinesTB_Callback(hObject, eventdata, handles)
+% hObject    handle to trackSpinesTB (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+if get(hObject,'Value')
+    set(handles.selectSpinesTB,'Value',0);
+end
+uaa_initializeSpineCoordinates;
+uaa_updateImage;
+
+% Hint: get(hObject,'Value') returns toggle state of trackSpinesTB

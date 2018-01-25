@@ -6,6 +6,11 @@ function [ shiftx,shifty ] = computeDrift( imgref,img)
 %Smirnov and based on drifty_shifty_deluxe script by Josh Sugar and Dave
 %Robinson, Sandia National Labs, Copyright 2014 Sandia Corporation.
 
+scale = size(img)./size(imgref);
+if ~(sum(size(imgref) == size(img)) == 2)
+    img = imresize(img,size(imgref));
+end    
+    
 [vidHeight vidWidth ~] = size(imgref);
 fft_ref=fft2(imgref); % 2D fast Fourier transform on initial image
 centery=(vidHeight/2)+1;
@@ -26,6 +31,9 @@ end
 if abs(shiftx)>vidWidth/2
     shiftx=shiftx-sign(shiftx)*vidWidth;
 end
+
+shiftx = round(shiftx * scale(1));
+shifty = round(shifty * scale(2));
 
 end
 
