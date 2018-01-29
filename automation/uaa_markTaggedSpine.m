@@ -8,6 +8,7 @@ for i = 1:length(s)
         s(i).Marker = 'o';
         s(i).MarkerEdgeColor = 'y';
         s(i).MarkerFaceColor = 'w';
+        labelThePoint(s(i));
     end
 end
 
@@ -20,4 +21,12 @@ if ~isempty(s)
     s.Marker = 'o';
     s.MarkerEdgeColor = 'y';
     s.MarkerFaceColor = 'k';
+    labelThePoint(s);
 end
+
+function labelThePoint(s)
+global uaa
+x = s.XData + 2;
+y = s.YData + 2;
+ax = findobj(uaa.handles.Fig1,'Type','Axes');
+text(ax,x,y,s.Tag);

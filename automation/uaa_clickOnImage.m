@@ -22,3 +22,4 @@ ind = [uaa.spineTracking.Spines.Tag] == Tag;
 frameInd = uaa.currentFrame;
 uaa.spineTracking.Spines(ind).Frames(frameInd).Status = 'Obscured';
 uaa.spineTracking.Spines(ind).Frames(frameInd).Coordinate = [];
+uaa_updateSpineTree;

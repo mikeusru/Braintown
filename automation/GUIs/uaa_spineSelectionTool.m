@@ -539,10 +539,17 @@ function trackSpinesTB_Callback(hObject, eventdata, handles)
 % hObject    handle to trackSpinesTB (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+global uaa
 if get(hObject,'Value')
     set(handles.selectSpinesTB,'Value',0);
 end
+if ~isfield(uaa,'spineTracking')
+    sf = struct('Coordinate',{},'Status',{});
+    s = struct('Tag',{},'Frames',sf);
+    uaa.spineTracking = struct('TrackedSpineTag',[],'Spines',s);
+end
 uaa_initializeSpineCoordinates;
 uaa_updateImage;
+uaa_updateSpineTree;
 
 % Hint: get(hObject,'Value') returns toggle state of trackSpinesTB
