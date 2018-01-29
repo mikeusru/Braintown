@@ -22,7 +22,7 @@ function varargout = uaa_main(varargin)
 
 % Edit the above text to modify the response to help uaa_main
 
-% Last Modified by GUIDE v2.5 24-Jan-2018 15:42:22
+% Last Modified by GUIDE v2.5 29-Jan-2018 14:52:21
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -701,7 +701,7 @@ try
 catch err
     disp(err);
 end
-    
+
 
 
 % --------------------------------------------------------------------
@@ -792,3 +792,26 @@ function open_bens_fov_file_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 uaa_open('bens_fov');
+
+
+% --------------------------------------------------------------------
+function ViewMenu_Callback(hObject, eventdata, handles)
+% hObject    handle to ViewMenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function imadjustMenu_Callback(hObject, eventdata, handles)
+% hObject    handle to imadjustMenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global uaa
+uaa.handles.CLim_slider_figure = figure('Name','Image Adjustment',...
+    'Position',[100,100,340,200],'Menubar','none','numbertitle','off');
+info_label = uicontrol(uaa.handles.CLim_slider_figure,'Style','text','Position',[20 160 280 20],...
+    'String','Close this window to enable automatic color limits');
+low_slider = uicontrol(uaa.handles.CLim_slider_figure,'Style','Slider', 'SliderStep',[1/255,1/255],'Min', 0, 'Max', 255, 'Value', 0,...
+    'Position', [20,80,300,20],'Tag','low_slider','Callback',@uaa_updateImage);
+high_slider = uicontrol(uaa.handles.CLim_slider_figure,'Style','Slider', 'SliderStep',[1/255,1/255], 'Min', 0, 'Max', 255, 'Value', 255,...
+    'Position', [20,20,300,20],'Tag','high_slider','Callback',@uaa_updateImage);

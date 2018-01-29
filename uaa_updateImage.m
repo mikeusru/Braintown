@@ -1,4 +1,4 @@
-function uaa_updateImage
+function uaa_updateImage(varargin)
 %UAA_UPDATEIMAGE updates the image in the figure
 
 global uaa
@@ -101,6 +101,12 @@ set(ih, 'ButtonDownFcn', buttonFxn);
 
 colormap(uaa.handles.ax(1),map)
 uaa.CData=get(ih,'CData');
+if isfield(uaa.handles,'CLim_slider_figure') && ishandle(uaa.handles.CLim_slider_figure)
+    c_low = get(findobj(uaa.handles.CLim_slider_figure,'Tag','low_slider'),'Value');
+    c_high = get(findobj(uaa.handles.CLim_slider_figure,'Tag','high_slider'),'Value');
+    uaa.handles.ax(1).CLim = [c_low,c_high];
+end
+
 %%
 
 drawnow;
