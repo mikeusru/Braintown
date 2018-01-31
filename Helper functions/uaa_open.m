@@ -53,7 +53,11 @@ T = struct2table(imageStruct,'asarray',true);
 T.DateTime = datetime(T.DateTime);
 T.Time = datenum(T.DateTime);
 minDateVec=datevec(min(T.Time));
-eTimeVec=etime(datevec(T.DateTime),minDateVec);
+eTimeVec = zeros(height(T),1);
+for i = 1:height(T)
+    eTimeVec(i) = etime(datevec(T.DateTime(i)),minDateVec);
+end
+% eTimeVec=etime(datevec(T.DateTime),minDateVec);
 T.Time=eTimeVec;
 T.Time=T.Time/60; %convert to minutes
 T=sortrows(T,'Time');
