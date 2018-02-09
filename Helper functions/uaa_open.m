@@ -156,6 +156,7 @@ end
 filePath = fullfile(pName,fileName);
 fov = load(filePath);
 fov = fov.fov;
+% This is a dumb way to do it but let's just do it this way for now...
 imageStruct = struct([]);
 xPos = [fov.xPos];
 yPos = [fov.yPos];
