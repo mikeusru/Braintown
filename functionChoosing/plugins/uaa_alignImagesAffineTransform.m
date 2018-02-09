@@ -20,7 +20,7 @@ ref_image = uaa_getCurrentImageFrame(ref_frame);
 %now find transform with these fixed points
 tForm = fitgeotrans(selectedMovingPoints, selectedFixedPoints, 'affine');
 % dim = size(template);
-transformedImage = imwarp(inputImage, tForm);
+transformedImage = imwarp(inputImage, tForm, 'OutputView',imref2d(size(inputImage)));
 figure; imshowpair(ref_image, transformedImage, 'falsecolor');
 
 % Construct a questdlg with three options
