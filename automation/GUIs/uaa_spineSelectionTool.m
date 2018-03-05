@@ -22,7 +22,7 @@ function varargout = uaa_spineSelectionTool(varargin)
 
 % Edit the above text to modify the response to help uaa_spineSelectionTool
 
-% Last Modified by GUIDE v2.5 05-Mar-2018 16:46:24
+% Last Modified by GUIDE v2.5 05-Mar-2018 17:27:34
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -565,14 +565,14 @@ global uaa
 parent_folder = uigetdir();
 for i = 1: height(uaa.T)
     %get info for text file
-    original_filepath = fullfile(uaa.T.Foldername{1}, uaa.T.Filename{1});
-    coordinates = uaa.T.SpineCoordinates{1}';
+    original_filepath = fullfile(uaa.T.Foldername{i}, uaa.T.Filename{i});
+    coordinates = uaa.T.SpineCoordinates{i}';
     coordinates_text = sprintf('x = %d, y = %d\n',coordinates(:));
     
     %get new folder and file names
-    folder_name = sprintf('spine%06d',1);
-    image_file_name = sprintf('spine_image%06d.tif',1);
-    text_file_name = sprintf('spine_info%06d.txt',1);
+    folder_name = sprintf('spine%06d',i);
+    image_file_name = sprintf('spine_image%06d.tif',i);
+    text_file_name = sprintf('spine_info%06d.txt',i);
     %make directory
     mkdir(fullfile(parent_folder,folder_name));
     %write text file
@@ -582,6 +582,6 @@ for i = 1: height(uaa.T)
     fprintf(fileID,coordinates_text);
     fclose(fileID);
     %write image
-    imwrite(mat2gray(uaa.T.Image{1}),fullfile(parent_folder,folder_name,image_file_name));
+    imwrite(mat2gray(uaa.T.Image{i}),fullfile(parent_folder,folder_name,image_file_name));
     fprintf('Image #%d of %d Written...\n', i, height(uaa.T));
 end
