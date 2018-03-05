@@ -314,12 +314,16 @@ try
     %First, load non-handle objects
     S=load(filePath);
     if ~isempty(find(~cellfun(@isempty,strfind(fieldnames(S),'branchStruct')),1))
-        uaa.T=S.ds;
+        uaa.T=dataset2table(S.ds);
     else
         names=fieldnames(S.uaaCopy);
         %     names=names(~strcmp(names,'handles')); %remove 'handles' fieldname
         for i=1:size(names,1)
-            uaa.(names{i,1})=S.uaaCopy.(names{i,1});
+            if strcmp(names{i,1},'ds')
+                uaa.T = dataset2table(S.uaaCopy.(names{i,1}));
+            else
+                uaa.(names{i,1})=S.uaaCopy.(names{i,1});
+            end
         end
         
         %Load empty ROI handles. This fixes a bug often caused by
