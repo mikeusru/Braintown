@@ -22,7 +22,7 @@ function varargout = uaa_spineSelectionTool(varargin)
 
 % Edit the above text to modify the response to help uaa_spineSelectionTool
 
-% Last Modified by GUIDE v2.5 25-Jan-2018 15:49:18
+% Last Modified by GUIDE v2.5 05-Mar-2018 16:46:24
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -553,3 +553,35 @@ uaa_updateImage;
 uaa_updateSpineTree;
 
 % Hint: get(hObject,'Value') returns toggle state of trackSpinesTB
+
+
+% --------------------------------------------------------------------
+function exportLabeledData_Callback(hObject, eventdata, handles)
+% hObject    handle to exportLabeledData (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global uaa
+%get parent folder
+parent_folder = uigetdir();
+for i = 1: height(uaa.T)
+    %get info for text file
+    original_filepath = fullfile(uaa.T.Foldername{1}, uaa.T.Filename{1});
+    coordinates = uaa.T.SpineCoordinates{1}';
+    coordinates_text = sprintf('x = %d, y = %d\n',coordinates(:));
+    
+    %get new folder and file names
+    folder_name = sprintf('spine%06d',1);
+    image_file_name = sprintf('spine_image%06d.tif',1);
+    text_file_name = sprintf('spine_info%06d.txt',1);
+    %make directory
+    mkdir(fullfile(parent_folder,folder_name));
+    %write text file
+    fileID = fopen(fullfile(parent_folder,folder_name,text_file_name),'w');
+    fprintf(fileID,'Original Filepath: \n%s\n\n',original_filepath);
+    fprintf(fileID,'%s\n','Spine Coordinates: ');
+    fprintf(fileID,coordinates_text);
+    fclose(fileID);
+    %write image
+    imwrite(mat2gray(uaa.T.Image{1}),fullfile(parent_folder,folder_name,image_file_name));
+    fprintf('Image #%d of %d Written...\n', i, height(uaa.T));
+end
