@@ -41,11 +41,12 @@ switch ftype
         end
         %load Images
         [imageStruct, pName] = loadBensFOV(pName);
-        if isinteger(imageStruct)
+        if isempty(imageStruct)
+            disp('Error - This is not the data you''re looking for');
             return
         end
         %set Startpath
-        uaa.settings.start_path_image = pName;        
+        uaa.settings.start_path_image = pName;
 end
 %convert to table
 T = struct2table(imageStruct,'asarray',true);
@@ -71,7 +72,7 @@ if ismember('pre-uncaging',parentFolder)
 end
 
 T = uaa_setupTable(T);
-        
+
 uaa.T=T;
 uaa.pathName=pName;
 uaa.currentFrame=1;
@@ -81,6 +82,7 @@ uaa_updateImage;
 % figure(uaa.handles.Fig1);
 % imagesc(uaa.T.Image{1,1});
 uaa_updateGUI;
+disp('Stuff opened successfully goodie');
 
 
 %find tiffs in list and load them
@@ -92,13 +94,13 @@ imageStruct = struct([]);
 ind = contains(e,'.tif') & ~contains(f,uaa.settings.ignoreFiles);
 fileList = fileList(ind);
 stackFlag = true;
-for i=1:length(fileList)  
+for i=1:length(fileList)
     [I,numImages,imageInfo] = uaa_loadTiffFiles(fileList(i));
     if i == 1
         n = numImages{1};
     elseif numImages{1} ~= n
         stackFlag = false;
-    end  
+    end
     imageStructPart = makeImageStructPart(I,numImages,imageInfo);
     imageStruct = [imageStruct, imageStructPart];
 end
@@ -122,7 +124,7 @@ if stackFlag
         ii = ii + 1;
     end
 end
-    
+
 
 %select images to load and load them
 function [imageStruct, pName] = loadImageFiles(pName)
@@ -147,37 +149,94 @@ imageStructPart = makeImageStructPart(I,numImages,imageInfo);
 imageStruct = imageStructPart;
 
 function [imageStruct, pName] = loadBensFOV(pName)
-[fileName,pName,~]=uigetfile([pName,'*.mat'],'Select File','MultiSelect','off');
-if ~fileName
-    imageStruct = 0;
-    pName = 0;
-    return
-end
-filePath = fullfile(pName,fileName);
-fov = load(filePath);
-fov = fov.fov;
-% This is a dumb way to do it but let's just do it this way for now...
+[fileName,pName,~]=uigetfile([pName,'\*.mat'],'Select File','MultiSelect','on');
 imageStruct = struct([]);
-xPos = [fov.xPos];
-yPos = [fov.yPos];
-loadedSessions = [];
-for i = 1:length(fov)
-    if ~isempty(fov(i).img)
-        session = fov(i).session;
-        if sum(session == loadedSessions) > 0
-            continue
+whole_path_loaded = false;
+if ~isa(fileName,'cell')
+    if ~fileName
+        pName=uigetdir('Select Directory');
+        if ~pName
+            return
         end
-        loadedSessions(end+1) = session;
-        imageStruct(end+1).Image = fov(i).img;
-        imageStruct(end).DateTime = fov(i).date;
-        imageStruct(end).Filename = fileName;
-        imageStruct(end).Foldername = pName;
-        x = xPos([fov.session] == session);
-        y = yPos([fov.session] == session);
-        imageStruct(end).SpineCoordinates = [x',y'];
+        fileList = getAllFiles(pName);
+        expression = '(.*.mat)';
+        fileName = regexp(fileList,expression,'match');
+        non_empty_ind = ~cellfun(@isempty,fileName);
+        fileName = fileName(non_empty_ind);
+        fileName = reshape(fileName,1,[]);
+        whole_path_loaded = true;
+    else
+        fileName = {fileName};
     end
 end
-    
+
+for f_name_single = fileName
+    if whole_path_loaded
+        filePath = f_name_single{1}{1};
+    else
+        filePath = fullfile(pName,f_name_single{1});
+    end
+    fov = load(filePath);
+    % This assumes there's just one fieldname, and whatever it is is the right
+    % thing.
+    fields = (fieldnames(fov));
+    fov = fov.(fields{1});
+    if ~isfield(fov,'spine') || ~isfield(fov,'img') || sum([fov.spine]) < 1
+        continue
+    end
+    % This is a dumb way to do it but let's just do it this way for now...
+    xPos = [fov.xPos];
+    yPos = [fov.yPos];
+    switch fields{1}
+        case 'fov'
+            loadedSessions = [];
+            for i = 1:length(fov)
+                if ~isempty(fov(i).img)
+                    session = fov(i).session;
+                    if sum(session == loadedSessions) > 0
+                        continue
+                    end
+                    loadedSessions(end+1) = session;
+                    imageStruct(end+1).Image = fov(i).img;
+                    if isfield(fov,'scale')
+                        imageStruct(end).Scale = fov(i).scale;
+                    end                    
+                    imageStruct(end).DateTime = fov(i).date;
+                    imageStruct(end).Filename = f_name_single{1};
+                    imageStruct(end).Foldername = pName;
+                    x = xPos([fov.session] == session);
+                    y = yPos([fov.session] == session);
+                    imageStruct(end).SpineCoordinates = [x',y'];
+                end
+            end
+        case 'ce'
+            for i = 1:length(fov)
+                if ~isempty(fov(i).img)
+                    img = fov(i).img;
+                    if ~isempty(imageStruct) 
+                        %check to make sure it's not a duplicate image
+                        if isequal(imageStruct(end).Image,img)
+                            continue
+                        end
+                    end
+                    imageStruct(end+1).Image = img;
+                    imageStruct(end).DateTime = fov(i).date;
+                    imageStruct(end).Filename = f_name_single{1};
+                    imageStruct(end).Foldername = pName;
+                    if isfield(fov,'scale')
+                        imageStruct(end).Scale = fov(i).scale;
+                    end
+                    x = xPos([fov.spine]);
+                    y = yPos([fov.spine]);
+                    imageStruct(end).SpineCoordinates = [x',y'];
+                end
+            end
+        otherwise
+            disp('Error - data type not recognized. Stop fooling around.');
+    end
+end
+
+
 %put images together into struct
 function imageStructPart = makeImageStructPart(I,numImages,imageInfo)
 ii = 1;

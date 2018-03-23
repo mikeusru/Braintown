@@ -22,7 +22,7 @@ function varargout = uaa_spineSelectionTool(varargin)
 
 % Edit the above text to modify the response to help uaa_spineSelectionTool
 
-% Last Modified by GUIDE v2.5 05-Mar-2018 17:27:34
+% Last Modified by GUIDE v2.5 23-Mar-2018 13:42:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -567,7 +567,7 @@ for i = 1: height(uaa.T)
     %get info for text file
     original_filepath = fullfile(uaa.T.Foldername{i}, uaa.T.Filename{i});
     coordinates = uaa.T.SpineCoordinates{i}';
-    coordinates_text = sprintf('x = %d, y = %d\n',coordinates(:));
+    coordinates_text = sprintf('x = %.0f, y = %.0f\n',coordinates(:));
     
     %get new folder and file names
     folder_name = sprintf('spine%06d',i);
@@ -585,3 +585,14 @@ for i = 1: height(uaa.T)
     imwrite(mat2gray(uaa.T.Image{i}),fullfile(parent_folder,folder_name,image_file_name));
     fprintf('Image #%d of %d Written...\n', i, height(uaa.T));
 end
+
+
+% --------------------------------------------------------------------
+function remove_frame_Callback(hObject, eventdata, handles)
+% hObject    handle to remove_frame (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global uaa
+uaa.T([uaa.currentFrame],:) = [];
+uaa_updateImage;
+uaa_updateGUI;

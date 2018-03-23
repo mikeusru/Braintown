@@ -3,7 +3,7 @@ function T = uaa_setupTable(T)
 %load in blank fields
 cellFields = {'Foldername','Filename','Time','Image','ImageStack','Roi','PolygonRoi','RoiCrop','PolyCrop','SpineCoordinates'};
 boolFields = {'Accessed'};
-matFields = {'AverageBackgroundPixel','RoiSum','RoiAvg','RoiMax','PolySum','PolyAvg','PolyMax'};
+matFields = {'Scale','AverageBackgroundPixel','RoiSum','RoiAvg','RoiMax','PolySum','PolyAvg','PolyMax'};
 siz = [height(T),1];
 emptyCell = cell(siz);
 emptyBool = false(siz);

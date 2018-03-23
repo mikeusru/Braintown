@@ -289,7 +289,7 @@ end
 [FileName,pathName]= uiputfile([pathName,'\',fName(1:end-3),'_Analyzed.mat']);
 uaa.pathName = pathName;
 
-save(fullfile(pathName,FileName),'uaaCopy');
+save(fullfile(pathName,FileName),'uaaCopy', '-v7.3');
 disp(['Data saved to ',fullfile(pathName,FileName)]);
 
 
