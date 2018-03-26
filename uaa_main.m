@@ -699,8 +699,14 @@ uaa.pathName = pathName;
 
 try
     S=load([pathName,'\',fileName]);
-    loadedDS = S.uaaCopy.ds;
-    uaa_addNewDataset(loadedDS);
+    fields = fieldnames(S.uaaCopy);
+    if sum(contains(fields,'ds'))
+        loadedDS = S.uaaCopy.ds;
+        loaded_table = dataset2table(loadedDS);
+    else
+        loaded_table = S.uaaCopy.T;
+    end
+    uaa_addNewDataset(loaded_table);
     disp([fileName, ' loaded successfully']);
 catch err
     disp(err);

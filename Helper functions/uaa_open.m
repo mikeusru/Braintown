@@ -1,6 +1,7 @@
 function uaa_open(ftype)
 %first function to open and load in images
 global uaa
+uaa.data_to_add = [];
 
 switch ftype
     case 'images'
@@ -77,6 +78,15 @@ uaa.T=T;
 uaa.pathName=pName;
 uaa.currentFrame=1;
 uaa.imSize=size(uaa_getCurrentImageFrame(1));
+%deal with already analyzed data in ben's fov folders
+if ~isempty(uaa.data_to_add)
+    for i = 1:length(uaa.data_to_add)
+        data_to_add = str(uaa.data_to_add(i));
+        S=load(data_to_add{1});
+        loadedDS = S.uaaCopy.T;
+        uaa_addNewDataset(loadedDS);
+    end
+end
 uaa_makeFig;
 uaa_updateImage;
 % figure(uaa.handles.Fig1);
@@ -149,6 +159,7 @@ imageStructPart = makeImageStructPart(I,numImages,imageInfo);
 imageStruct = imageStructPart;
 
 function [imageStruct, pName] = loadBensFOV(pName)
+global uaa
 [fileName,pName,~]=uigetfile([pName,'\*.mat'],'Select File','MultiSelect','on');
 imageStruct = struct([]);
 whole_path_loaded = false;
@@ -159,6 +170,17 @@ if ~isa(fileName,'cell')
             return
         end
         fileList = getAllFiles(pName);
+        % remove folders with previously analyzed data
+        expression = '(.*_Analyzed.mat)';
+        file_name_analyzed = regexp(fileList, expression, 'match');
+        file_name_analyzed(cellfun(@isempty,file_name_analyzed)) = [];
+        uaa.data_to_add = file_name_analyzed;
+        for i = 1:length(file_name_analyzed)
+            [~,f,~] = fileparts(fileparts(file_name_analyzed{i}{1}));
+            expression = sprintf('%s',f);
+            analyzed_folders = regexp(fileList, expression, 'match');
+            fileList(cellfun(~@isempty,analyzed_folders)) = [];
+        end
         expression = '(.*.mat)';
         fileName = regexp(fileList,expression,'match');
         non_empty_ind = ~cellfun(@isempty,fileName);
@@ -200,7 +222,7 @@ for f_name_single = fileName
                     imageStruct(end+1).Image = fov(i).img;
                     if isfield(fov,'scale')
                         imageStruct(end).Scale = fov(i).scale;
-                    end                    
+                    end
                     imageStruct(end).DateTime = fov(i).date;
                     imageStruct(end).Filename = f_name_single{1};
                     imageStruct(end).Foldername = pName;
@@ -213,7 +235,7 @@ for f_name_single = fileName
             for i = 1:length(fov)
                 if ~isempty(fov(i).img)
                     img = fov(i).img;
-                    if ~isempty(imageStruct) 
+                    if ~isempty(imageStruct)
                         %check to make sure it's not a duplicate image
                         if isequal(imageStruct(end).Image,img)
                             continue
