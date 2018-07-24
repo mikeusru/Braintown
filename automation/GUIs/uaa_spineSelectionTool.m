@@ -22,7 +22,7 @@ function varargout = uaa_spineSelectionTool(varargin)
 
 % Edit the above text to modify the response to help uaa_spineSelectionTool
 
-% Last Modified by GUIDE v2.5 23-Mar-2018 13:42:15
+% Last Modified by GUIDE v2.5 28-Mar-2018 11:14:36
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -567,12 +567,15 @@ for i = 1: height(uaa.T)
     %get info for text file
     original_filepath = fullfile(uaa.T.Foldername{i}, uaa.T.Filename{i});
     coordinates = uaa.T.SpineCoordinates{i}';
+    bounding_boxes = uaa.T.BoundingBoxes{i};
+    scale_text = sprintf('%.2f px per um',uaa.T.Scale{i});
     coordinates_text = sprintf('x = %.0f, y = %.0f\n',coordinates(:));
-    
+%     bounding_box_text = sprintf('x = %.0f, y = %.0f, w = %.0f, h = %.0f\n',bounding_boxes(:));
     %get new folder and file names
     folder_name = sprintf('spine%06d',i);
     image_file_name = sprintf('spine_image%06d.tif',i);
     text_file_name = sprintf('spine_info%06d.txt',i);
+    bounding_box_file_name = sprintf('spine_bounding_boxes%06d.csv',i);
     %make directory
     mkdir(fullfile(parent_folder,folder_name));
     %write text file
@@ -580,11 +583,16 @@ for i = 1: height(uaa.T)
     fprintf(fileID,'Original Filepath: \n%s\n\n',original_filepath);
     fprintf(fileID,'%s\n','Spine Coordinates: ');
     fprintf(fileID,coordinates_text);
+    fprintf(fileID,'%s\n','Scale: ');
+    fprintf(fileID,scale_text);
     fclose(fileID);
+    %write bounding boxes to separate csv file
+    csvwrite(fullfile(parent_folder,folder_name,bounding_box_file_name),bounding_boxes)
     %write image
     imwrite(mat2gray(uaa.T.Image{i}),fullfile(parent_folder,folder_name,image_file_name));
     fprintf('Image #%d of %d Written...\n', i, height(uaa.T));
 end
+fprintf('Donez0rz');
 
 
 % --------------------------------------------------------------------
@@ -596,3 +604,20 @@ global uaa
 uaa.T([uaa.currentFrame],:) = [];
 uaa_updateImage;
 uaa_updateGUI;
+
+
+% --- Executes on button press in calculate_bounding_boxes_PB.
+function calculate_bounding_boxes_PB_Callback(hObject, eventdata, handles)
+% hObject    handle to calculate_bounding_boxes_PB (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+uaa_calculate_spine_bounding_boxes;
+
+
+% --- Executes on button press in show_bounding_boxes_CB.
+function show_bounding_boxes_CB_Callback(hObject, eventdata, handles)
+% hObject    handle to show_bounding_boxes_CB (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of show_bounding_boxes_CB

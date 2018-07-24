@@ -83,11 +83,20 @@ if isfield(uaa.handles,'uaa_spineSelectionTool') && ishandle(uaa.handles.uaa_spi
             uaa.T.SpineCoordinates{uaa.currentFrame} = spineCoordinates;
         end
         markerSiz = 1e5 / max(max(size(uaa.T.Image{uaa.currentFrame,1})) * 4,1000);
+
         for i=1:size(spineCoordinates,1)
             scatter(uaa.handles.ax(1),spineCoordinates(i,1),...
                 spineCoordinates(i,2),...
                 markerSiz/2,'d','filled','MarkerEdgeColor','r','MarkerFaceColor','k',...
                 'LineWidth',2,'ButtonDownFcn',@uaa_selectedSpineClickCallback);
+%             rectangle('Position',rect_pos,'parent',uaa.handles.ax(1));
+        end
+        %plot bounding boxes
+        if ~isempty(uaa.T.BoundingBoxes(uaa.currentFrame)) && get(uaa.handles.uaa_spineSelectionTool.show_bounding_boxes_CB, 'Value')
+            pos = uaa.T.BoundingBoxes{uaa.currentFrame};
+            X = [pos(:,1), pos(:,1), pos(:,1) + pos(:,3), pos(:,1) + pos(:,3)]';
+            Y = [pos(:,2), pos(:,2) + pos(:,4), pos(:,2) + pos(:,4), pos(:,2)]';
+            patch(uaa.handles.ax(1),'XData',X,'YData',Y, 'FaceColor', 'None');
         end
         if get(uaa.handles.uaa_spineSelectionTool.trackSpinesTB, 'Value')
             uaa_tagSpineScatters();

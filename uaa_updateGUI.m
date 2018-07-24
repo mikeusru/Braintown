@@ -38,6 +38,15 @@ try
             set(h,'Enable','off');
     end
 end
+%show scale in functionsGui
+if sum(contains(uaa.T.Properties.VariableNames,'Scale'))
+    set(uaa.handles.functionsGui.pixel_per_um_ED,'String',num2str(cell2mat(uaa.T.Scale(uaa.currentFrame))));
+end
+%show resolution in functionsGui
+w_h = size(cell2mat(uaa.T.Image(uaa.currentFrame)));
+resolution_text = sprintf('%dx%dpx',w_h(1),w_h(2));
+set(uaa.handles.functionsGui.resolution_TX,'String',resolution_text);
+
 if wShed
     try
         varNames=fieldnames(uaa.settings.watershed);

@@ -78,20 +78,23 @@ uaa.T=T;
 uaa.pathName=pName;
 uaa.currentFrame=1;
 uaa.imSize=size(uaa_getCurrentImageFrame(1));
-%deal with already analyzed data in ben's fov folders
-if ~isempty(uaa.data_to_add)
-    for i = 1:length(uaa.data_to_add)
-        data_to_add = str(uaa.data_to_add(i));
-        S=load(data_to_add{1});
-        loadedDS = S.uaaCopy.T;
-        uaa_addNewDataset(loadedDS);
-    end
-end
+
 uaa_makeFig;
 uaa_updateImage;
 % figure(uaa.handles.Fig1);
 % imagesc(uaa.T.Image{1,1});
 uaa_updateGUI;
+
+%deal with already analyzed data in ben's fov folders
+if ~isempty(uaa.data_to_add)
+    for i = 1:length(uaa.data_to_add)
+        data_to_add = uaa.data_to_add{i};
+        S=load(data_to_add{1});
+        loaded_table = S.uaaCopy.T;
+        uaa_addNewDataset(loaded_table);
+    end
+end
+
 disp('Stuff opened successfully goodie');
 
 
@@ -179,7 +182,7 @@ if ~isa(fileName,'cell')
             [~,f,~] = fileparts(fileparts(file_name_analyzed{i}{1}));
             expression = sprintf('%s',f);
             analyzed_folders = regexp(fileList, expression, 'match');
-            fileList(cellfun(~@isempty,analyzed_folders)) = [];
+            fileList(~cellfun(@isempty,analyzed_folders)) = [];
         end
         expression = '(.*.mat)';
         fileName = regexp(fileList,expression,'match');

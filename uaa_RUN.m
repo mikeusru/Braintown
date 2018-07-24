@@ -23,6 +23,7 @@ try
 end
 
 uaa.fxnChoosing.inputCurrentFrame = 1;
+uaa.uncageFrame = 5;
 loadFeatureExtractorSettings;
 %open GUI
 uaa_main;

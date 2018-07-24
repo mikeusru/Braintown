@@ -22,7 +22,7 @@ function varargout = functionsGui(varargin)
 
 % Edit the above text to modify the response to help functionsGui
 
-% Last Modified by GUIDE v2.5 16-Feb-2017 13:08:38
+% Last Modified by GUIDE v2.5 03-Apr-2018 10:37:44
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -491,6 +491,31 @@ function convertED_Callback(hObject, eventdata, handles)
 % --- Executes during object creation, after setting all properties.
 function convertED_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to convertED (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function pixel_per_um_ED_Callback(hObject, eventdata, handles)
+% hObject    handle to pixel_per_um_ED (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global uaa
+pixels_per_um = str2double(get(hObject,'String'));
+uaa.T.Scale{uaa.currentFrame} = pixels_per_um;
+% Hints: get(hObject,'String') returns contents of pixel_per_um_ED as text
+%        str2double(get(hObject,'String')) returns contents of pixel_per_um_ED as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function pixel_per_um_ED_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to pixel_per_um_ED (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
