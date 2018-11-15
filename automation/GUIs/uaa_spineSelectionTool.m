@@ -22,7 +22,7 @@ function varargout = uaa_spineSelectionTool(varargin)
 
 % Edit the above text to modify the response to help uaa_spineSelectionTool
 
-% Last Modified by GUIDE v2.5 28-Mar-2018 11:14:36
+% Last Modified by GUIDE v2.5 15-Nov-2018 11:06:59
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -621,3 +621,41 @@ function show_bounding_boxes_CB_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of show_bounding_boxes_CB
+
+
+% --------------------------------------------------------------------
+function exportForYolov3_Callback(hObject, eventdata, handles)
+% hObject    handle to exportForYolov3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global uaa
+parent_folder = uigetdir();
+image_dir = fullfile(parent_folder,'images');
+labels_dir = fullfile(parent_folder,'labels');
+mkdir(image_dir);
+mkdir(labels_dir);
+all_image_paths = cell(height(uaa.T),1);
+for i = 1: height(uaa.T)
+    coordinates = uaa.T.SpineCoordinates{i}';
+    bounding_boxes = uaa.T.BoundingBoxes{i};
+    classes = ones(size(bounding_boxes(:,1)));
+    yolo_boxes_cxywh = [classes, coordinates', bounding_boxes(:,3:end)];
+    image_file_name = sprintf('%06d.tif',i);
+    text_file_name = sprintf('%06d.txt',i);
+    labels_path = fullfile(labels_dir,text_file_name);
+    dlmwrite(labels_path,yolo_boxes_cxywh,' ');
+    image_path = fullfile(image_dir,image_file_name);
+    imwrite(mat2gray(repmat(uaa.T.Image{i},1,1,3)),image_path);
+    fprintf('Image #%d of %d Written...\n', i, height(uaa.T));
+    all_image_paths{i}=image_path;
+end
+[trainInd, valInd, ~] = dividerand(height(uaa.T), .7,.3,0);
+all_image_paths(trainInd)
+
+fid_train = fopen(fullfile(parent_folder, 'train.txt'),'a');
+fid_val = fopen(fullfile(parent_folder, 'validation.txt'),'a');
+fprintf(fid, '%s\n',image_path);
+fclose(fid);
+fprintf('Donez0rz');
+
+
