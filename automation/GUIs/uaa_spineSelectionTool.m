@@ -643,19 +643,20 @@ for i = 1: height(uaa.T)
     image_file_name = sprintf('%06d.tif',i);
     text_file_name = sprintf('%06d.txt',i);
     labels_path = fullfile(labels_dir,text_file_name);
-    dlmwrite(labels_path,yolo_boxes_cxywh,' ');
+    dlmwrite(labels_path,yolo_boxes_cxywh,'delimiter',' ','newline','pc');
     image_path = fullfile(image_dir,image_file_name);
     imwrite(mat2gray(repmat(uaa.T.Image{i},1,1,3)),image_path);
     fprintf('Image #%d of %d Written...\n', i, height(uaa.T));
     all_image_paths{i}=image_path;
 end
 [trainInd, valInd, ~] = dividerand(height(uaa.T), .7,.3,0);
-all_image_paths(trainInd)
+writeCellsToText(all_image_paths(trainInd), fullfile(parent_folder, 'train.txt'));
+writeCellsToText(all_image_paths(valInd), fullfile(parent_folder, 'validation.txt'));
+fprintf('Donez0rz\n');
 
-fid_train = fopen(fullfile(parent_folder, 'train.txt'),'a');
-fid_val = fopen(fullfile(parent_folder, 'validation.txt'),'a');
-fprintf(fid, '%s\n',image_path);
+function writeCellsToText(cellArray, filePath)
+fid = fopen(filePath, 'at');
+for i = 1:length(cellArray)
+    fprintf(fid, '%s\n\r', cellArray{i});
+end
 fclose(fid);
-fprintf('Donez0rz');
-
-
