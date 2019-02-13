@@ -142,7 +142,7 @@ end
 %select images to load and load them
 function [imageStruct, pName] = loadImageFiles(pName)
 [fileName,pName,~]=uigetfile([pName,'*.tif'],'Select File','MultiSelect','on');
-if ~fileName
+if isempty(fileName)
     imageStruct = 0;
     pName = 0;
     return

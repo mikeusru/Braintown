@@ -630,29 +630,50 @@ function exportForYolov3_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 global uaa
 parent_folder = uigetdir();
-image_dir = fullfile(parent_folder,'images');
-labels_dir = fullfile(parent_folder,'labels');
+relative_image_dir = 'images';
+image_dir = fullfile(parent_folder,relative_image_dir);
+% labels_dir = fullfile(parent_folder,'labels');
 mkdir(image_dir);
-mkdir(labels_dir);
-all_image_paths = cell(height(uaa.T),1);
+% mkdir(labels_dir);
+all_file_lines = cell(height(uaa.T),1);
+other_image_info_lines = all_file_lines;
 for i = 1: height(uaa.T)
-    coordinates = uaa.T.SpineCoordinates{i}';
-    bounding_boxes = uaa.T.BoundingBoxes{i};
-    classes = ones(size(bounding_boxes(:,1)));
-    yolo_boxes_cxywh = [classes, coordinates', bounding_boxes(:,3:end)];
+    yolo_boxes = get_yolo_boxes_xmin_ymin_xmax_ymax_c(i);
     image_file_name = sprintf('%06d.tif',i);
-    text_file_name = sprintf('%06d.txt',i);
-    labels_path = fullfile(labels_dir,text_file_name);
-    dlmwrite(labels_path,yolo_boxes_cxywh,'delimiter',' ','newline','pc');
     image_path = fullfile(image_dir,image_file_name);
+    relative_image_path = fullfile(relative_image_dir, image_file_name);
     imwrite(mat2gray(repmat(uaa.T.Image{i},1,1,3)),image_path);
     fprintf('Image #%d of %d Written...\n', i, height(uaa.T));
-    all_image_paths{i}=image_path;
+    yolo_boxes = yolo_boxes';
+    yolo_boxes_string = sprintf('%.0f,%.0f,%.0f,%.0f,%.0f ', yolo_boxes(:));
+    all_file_lines{i} = sprintf('%s %s', relative_image_path, yolo_boxes_string);
+    other_image_info_lines{i} = sprintf('%s Scale %.2f', relative_image_path, uaa.T.Scale{i});
 end
-[trainInd, valInd, ~] = dividerand(height(uaa.T), .7,.3,0);
-writeCellsToText(all_image_paths(trainInd), fullfile(parent_folder, 'train.txt'));
-writeCellsToText(all_image_paths(valInd), fullfile(parent_folder, 'validation.txt'));
+[trainInd, valInd, ~] = dividerand(height(uaa.T), 0.7, 0.3, 0);
+writeCellsToText(all_file_lines(trainInd), fullfile(parent_folder, 'train.txt'));
+writeCellsToText(all_file_lines(valInd), fullfile(parent_folder, 'validation.txt'));
+writeCellsToText(other_image_info_lines, fullfile(parent_folder, 'image_info.txt'));
 fprintf('Donez0rz\n');
+
+function yolo_boxes_cxywh = getCXYWH(i)
+global uaa
+[imageHeight, imageWidth] = size(uaa.T.Image{i});
+coordinates = uaa.T.SpineCoordinates{i}';
+coordinates = coordinates'./[imageWidth,imageHeight];
+bounding_boxes = uaa.T.BoundingBoxes{i};
+w_h=bounding_boxes(:,3:end)./[imageWidth,imageHeight];
+classes = ones(size(bounding_boxes(:,1)));
+yolo_boxes_cxywh = [classes, coordinates, w_h];
+
+function yolo_boxes = get_yolo_boxes_xmin_ymin_xmax_ymax_c(i)
+global uaa
+if max(contains(uaa.T.Properties.VariableNames, 'BoundingBoxes'))
+    bounding_boxes = uaa.T.BoundingBoxes{i};
+    classes = zeros(size(bounding_boxes(:,1)));
+    yolo_boxes = [bounding_boxes(:,1:2), bounding_boxes(:,1:2) + bounding_boxes(:,3:4), classes];
+else
+    yolo_boxes = [];
+end
 
 function writeCellsToText(cellArray, filePath)
 fid = fopen(filePath, 'at');

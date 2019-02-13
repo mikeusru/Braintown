@@ -92,11 +92,13 @@ if isfield(uaa.handles,'uaa_spineSelectionTool') && ishandle(uaa.handles.uaa_spi
 %             rectangle('Position',rect_pos,'parent',uaa.handles.ax(1));
         end
         %plot bounding boxes
-        if ~isempty(uaa.T.BoundingBoxes(uaa.currentFrame)) && get(uaa.handles.uaa_spineSelectionTool.show_bounding_boxes_CB, 'Value')
+        if ismember('BoundingBoxes', uaa.T.Properties.VariableNames) && ~isempty(uaa.T.BoundingBoxes(uaa.currentFrame)) && get(uaa.handles.uaa_spineSelectionTool.show_bounding_boxes_CB, 'Value')
             pos = uaa.T.BoundingBoxes{uaa.currentFrame};
-            X = [pos(:,1), pos(:,1), pos(:,1) + pos(:,3), pos(:,1) + pos(:,3)]';
-            Y = [pos(:,2), pos(:,2) + pos(:,4), pos(:,2) + pos(:,4), pos(:,2)]';
-            patch(uaa.handles.ax(1),'XData',X,'YData',Y, 'FaceColor', 'None');
+            if ~isempty(pos)
+                X = [pos(:,1), pos(:,1), pos(:,1) + pos(:,3), pos(:,1) + pos(:,3)]';
+                Y = [pos(:,2), pos(:,2) + pos(:,4), pos(:,2) + pos(:,4), pos(:,2)]';
+                patch(uaa.handles.ax(1),'XData',X,'YData',Y, 'FaceColor', 'None');
+            end
         end
         if get(uaa.handles.uaa_spineSelectionTool.trackSpinesTB, 'Value')
             uaa_tagSpineScatters();
