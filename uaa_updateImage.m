@@ -97,7 +97,7 @@ if isfield(uaa.handles,'uaa_spineSelectionTool') && ishandle(uaa.handles.uaa_spi
             if ~isempty(pos)
                 X = [pos(:,1), pos(:,1), pos(:,1) + pos(:,3), pos(:,1) + pos(:,3)]';
                 Y = [pos(:,2), pos(:,2) + pos(:,4), pos(:,2) + pos(:,4), pos(:,2)]';
-                patch(uaa.handles.ax(1),'XData',X,'YData',Y, 'FaceColor', 'None');
+                patch(uaa.handles.ax(1),'XData',X,'YData',Y, 'FaceColor', 'None','LineWidth',2);
             end
         end
         if get(uaa.handles.uaa_spineSelectionTool.trackSpinesTB, 'Value')

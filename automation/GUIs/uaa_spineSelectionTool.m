@@ -666,7 +666,7 @@ classes = ones(size(bounding_boxes(:,1)));
 yolo_boxes_cxywh = [classes, coordinates, w_h];
 
 function yolo_boxes = get_yolo_boxes_xmin_ymin_xmax_ymax_c(i)
-global uaa
+global uaa  
 if max(contains(uaa.T.Properties.VariableNames, 'BoundingBoxes'))
     bounding_boxes = uaa.T.BoundingBoxes{i};
     classes = zeros(size(bounding_boxes(:,1)));
