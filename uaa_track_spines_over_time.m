@@ -84,11 +84,12 @@ for i = 1:length(X)
     ylabel('Y (px)');
     zlabel('X (px)');
 end
-for i = 1:20:length(frames)
+for i = 35:35:length(frames)
     img = images{i};
 	img = double(img)/double(max(img(:)));
     img = repmat(img,1,1,3);
     [Ximg,Yimg] = meshgrid(1:size(img,1),1:size(img,2));
-    surf(ax,ones(size(images{i}))*i, Ximg', Yimg', double(img)/double(max(img(:))),'EdgeColor','none','facealpha',.3)
+    surf(ax,ones(size(images{i}))*i, Ximg', Yimg', double(img)/double(max(img(:))),'EdgeColor','none','facealpha',.5)
 end
+set(ax,'DataAspectRatio',[1/3,1,1]);
 hold(ax,'off');

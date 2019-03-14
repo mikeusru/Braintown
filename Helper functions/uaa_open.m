@@ -111,7 +111,8 @@ for i=1:length(fileList)
     [I,numImages,imageInfo] = uaa_loadTiffFiles(fileList(i));
     if i == 1
         n = numImages{1};
-    elseif numImages{1} ~= n
+%     elseif numImages{1} ~= n
+    elseif numImages{1} == 1
         stackFlag = false;
     end
     imageStructPart = makeImageStructPart(I,numImages,imageInfo);
@@ -130,8 +131,8 @@ if stackFlag
     %collapse into stacks
     while ii < length(imageStruct)
         stackInd = contains({imageStruct.Filename},[imageStruct(ii).Filename]);
-        imageStruct(ii).ImageStack = {imageStruct(stackInd).Image};
-        imageStruct(ii).Image = max(cat(3,imageStruct(ii).ImageStack{:}),[],3);
+        imageStruct(ii).ImageStack = cat(3,imageStruct(stackInd).Image);
+        imageStruct(ii).Image = max(imageStruct(ii).ImageStack,[],3);
         stackInd(ii)=0;
         imageStruct(stackInd) = [];
         ii = ii + 1;
