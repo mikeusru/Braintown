@@ -612,14 +612,14 @@ function calculate_bounding_boxes_PB_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 uaa_calculate_spine_bounding_boxes;
-
+uaa_updateImage;
 
 % --- Executes on button press in show_bounding_boxes_CB.
 function show_bounding_boxes_CB_Callback(hObject, eventdata, handles)
 % hObject    handle to show_bounding_boxes_CB (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+uaa_updateImage;
 % Hint: get(hObject,'Value') returns toggle state of show_bounding_boxes_CB
 
 

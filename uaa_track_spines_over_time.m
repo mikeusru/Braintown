@@ -76,20 +76,31 @@ end
 
 
 f = figure;
+set(f,'color','white');
 ax = axes(f);
 hold(ax,'on')
 for i = 1:length(X)
-    plot3(ax,Z{i},Y{i},X{i},'linewidth',4);
-    xlabel('Time (min)');
-    ylabel('Y (px)');
-    zlabel('X (px)');
+        if ~isempty(Z{i})
+            plot3(ax,Z{i},Y{i},X{i},'linewidth',4);
+            scatter3(ax, Z{i}(1),Y{i}(1),X{i}(1),'go','filled');
+            scatter3(ax, Z{i}(end),Y{i}(end),X{i}(end),'ro','filled');
+        end
+%     ylabel('Y (px)');
+%     zlabel('X (px)');
 end
-for i = 35:35:length(frames)
+for i = [1,length(frames)]
     img = images{i};
 	img = double(img)/double(max(img(:)));
     img = repmat(img,1,1,3);
     [Ximg,Yimg] = meshgrid(1:size(img,1),1:size(img,2));
-    surf(ax,ones(size(images{i}))*i, Ximg', Yimg', double(img)/double(max(img(:))),'EdgeColor','none','facealpha',.5)
+    alpha = 1;
+    if i == 1
+        alpha = .4;
+    end
+    surf(ax,ones(size(images{i}))*i, Ximg', Yimg', double(img)/double(max(img(:))),'EdgeColor','none','facealpha',alpha)
 end
-set(ax,'DataAspectRatio',[1/3,1,1]);
+xlabel(ax, 't (min)');
+set(ax,'DataAspectRatio',[1/3,1,1],'ZColor','none','YColor','none','YDir','reverse');
+xt = xticks(ax);
+xticks(ax, [0,max(xt)]);
 hold(ax,'off');
