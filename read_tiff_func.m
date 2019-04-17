@@ -34,6 +34,14 @@ if NumberImages == 1
 end
 FinalImage=zeros(nImage,mImage,NumberImages,'uint16');
 for i=1:NumberImages
+   %assign frames by 1. if shape is wrong, just assign the image and break
+   %the loop.
+   img = imread(FileTif,'Index',i);
+   if ~isequal(size(FinalImage(:,:,i)),size(img))
+       FinalImage = uint16(img);
+%        NumberImages = size(FinalImage,3);
+       break
+   end
    FinalImage(:,:,i)=imread(FileTif,'Index',i);
 end
 

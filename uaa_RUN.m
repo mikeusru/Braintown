@@ -7,8 +7,8 @@ evalin('base','global uaa');
 % load config file
 fPath=mfilename('fullpath');
 [pName,~,~]=fileparts(fPath);
-if exist([pName,'\uaa_settings.mat'],'file')
-    uaa.settings=load([pName,'\uaa_settings.mat']);
+if exist(fullfile(pName,'uaa_settings.mat'),'file')
+    uaa.settings=load(fullfile(pName,'uaa_settings.mat'));
 else
     disp([pName,'\uaa_settings.mat']);
     disp('not found. Using default settings.');

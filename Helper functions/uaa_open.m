@@ -268,7 +268,12 @@ function imageStructPart = makeImageStructPart(I,numImages,imageInfo)
 ii = 1;
 for i = 1:length(I)
     for j = 1:numImages{i}
-        imageStructPart(ii).Image = I{i}(:,:,j);
+        if size(I{i},3) > numImages{i}
+            imageStructPart(ii).Image = max(I{i},[],3);
+            imageStructPart(ii).ImageStack = I{i};
+        else
+            imageStructPart(ii).Image = I{i}(:,:,j);
+        end
         imageStructPart(ii).DateTime = imageInfo{i}(j).FileModDate;
         [p,f,e] = fileparts(imageInfo{i}(j).Filename);
         imageStructPart(ii).Filename = [f,e];
